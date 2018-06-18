@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Food API Test</title>
+
+    <!-- Added a link to Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/buttons.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+           
+</head>
+
+<body>
+    <input id="run" type="submit" value="Run">
+    <div id="recipesDiv"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+
+            $(document).on("click", "#run", function (event) {
+                event.preventDefault();
+                // var ing1 = $("#ing1").val().trim();
+                // var ing2 = $("#ing2").val().trim();
+                // var ing3 = $("#ing3").val().trim();
+
+                var queryURL = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=apples%2Cflour%2Csugar&limitLicense=false&number=5&ranking=1"
+                //var queryURL = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients="+ing1+"%2C"+ing2+"%2C"+ing3+"sugar&limitLicense=false&number=5&ranking=1"
+                //var foodTitleArray = [];
+
+                //console.log(foodTitleArray);
+
+                $.ajax({
+                    url: queryURL,
+                    method: "GET",
+                    headers: {
+                        "X-Mashape-Key": "2I6vIUjk1TmshV5d9PU7jtgjqmesp1Y3LPMjsnRMnpBlNifs8B"
+                    }
+                }).then(function (response) {
+                    console.log(response)
+                    //debugger;
+                    for (var i = 0; i < response.length; i++) {
+                        var foodDiv = $("<div>");
+                        foodDiv.addClass("foodDiv");
+                        var foodTitle = response[i].title;
+
+                        //var foodDivArray = [];
+                        //console.log(foodDivArray);
+
+
+                        //Here we are dynamically creating a div for each recipe.
+                        var p1 = $("<p>").text(foodTitle);
+                        var titleUrl = foodTitle.replace(/\s/g, '-');
+                        var foodId = response[i].id;
+                        var foodUrl = "https://spoonacular.com/recipes/" + titleUrl + "-" + foodId + "";
+                        console.log(foodUrl);
+                        var foodImage = $("<img>");
+                        foodImage.attr("src", response[i].image);
+                        var a = $("<a>");
+                        a.attr("href", foodUrl);
+                        a.append(foodImage);
+                        var usedIng = response[i].usedIngredientCount;
+                        var p2 = $("<p>").text("No. of ingredients used: " + usedIng);
+                        youtubeApiCall(foodTitle, foodDiv);
+                        foodDiv.append(p1);
+                        foodDiv.append(a);
+                        foodDiv.append(p2);
+                        
+
+                        //foodDivArray.push(foodDiv);
+                        $("#recipesDiv").append(foodDiv);
+
+
+
+                    }
+
+
+                })
+
+                //debugger;
+
+
+            })
+
+            function youtubeApiCall(foodTitle, foodDiv) {
+                //second .ajax function starts here
+                var video = "How to make " + foodTitle;
+                console.log(video);
+
+                var queryURL1 = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" +
+                    video + "&type=video&key=AIzaSyDUCh8h4KhjDpzDmGOSdJOLxtDdzR8Swhs";
+                console.log(queryURL1);
+                $.ajax({
+                    url: queryURL1,
+                    method: "GET"
+                }).then(function (response1) {
+                    console.log(response1)
+
+                    var results = response1.items;
+
+                    //debugger;
+                    //var resultDiv = $("#vresults");
+                    var titles = results[0].snippet.title;
+                    var videoIds = results[0].id.videoId;
+                    var videoURL = "https://www.youtube.com/watch?v=" + videoIds;
+                    var p = $("<p>").text("Video ID: " + videoIds);
+                    var q = $("<p>").text(titles);
+
+
+
+                    foodDiv.append("<a href='" + videoURL + "'class='button button-caution button-box button-raised button-giant button-longshadow'><i class='fa fa-youtube'></i></a>");
+                    $("#recipesDiv").append(foodDiv);
+
+
+
+                    $(".button-caution").on("click", function (e) {
+                        e.preventDefault();
+                        href = videoURL;
+                        window.open(videoURL, videoIds, '_blank');
+                    });
+                });
+            }
+
+
+        });
+
+
+
+
+
+    </script>
+
+    <style>
+    .foodDiv {
+        float:left;
+        width:400px;
+        height:300px;
+        margin-left:80px;
+        margin-bottom:150px;
+        text-align: center;
+        }
+    </style>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/youtube-AP.js"></script>
+</body>
+
+</html>
