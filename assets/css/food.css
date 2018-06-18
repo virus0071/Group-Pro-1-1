@@ -1,0 +1,12 @@
+.foodDiv {
+    float:left;
+    width:400px;
+    height:300px;
+    margin-left:80px;
+    margin-bottom:150px;
+    text-align: center;
+}
+
+#recipesDiv {
+    font-size:20px;
+}
