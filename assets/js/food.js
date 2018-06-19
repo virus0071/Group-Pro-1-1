@@ -90,12 +90,12 @@ $(document).ready(function () {
 
 
 
-            foodDiv.append("<a href='" + videoURL + "'class='button button-caution button-box button-raised button-giant button-longshadow'><i class='fa fa-youtube'></i></a>");
+            foodDiv.append("<a href='" + videoURL + "'class='button button-caution button-box button-raised button-giant button-longshadow' id='youtube'><i class='fa fa-youtube'></i></a>");
             $("#recipesDiv").append(foodDiv);
 
 
 
-            $(".button-caution").on("click", function (e) {
+            $("#youtube").on("click", function (e) {
                 e.preventDefault();
                 href = videoURL;
                 window.open(videoURL, videoIds, '_blank');
