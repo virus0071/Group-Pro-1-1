@@ -95,7 +95,7 @@ $(document).ready(function () {
 
 
 
-            $("#youtube").on("click", function (e) {
+            $(".button-caution").on("click", function (e) {
                 e.preventDefault();
                 href = videoURL;
                 window.open(videoURL, videoIds, '_blank');
